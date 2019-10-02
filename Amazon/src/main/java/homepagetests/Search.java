@@ -1,4 +1,4 @@
-package homepage;
+package homepagetests;
 
 import base.CommonAPI;
 import org.testng.Assert;

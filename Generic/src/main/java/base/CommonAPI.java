@@ -7,6 +7,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
@@ -17,6 +19,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,19 +31,49 @@ public class CommonAPI {
 
     public static WebDriver driver;
     public static ExtentReports extent;
+    //HomeWork
+    public static String sauceUserName="nabeelhuter";
+    public static String sauceKey="706c1c3b-31b7-4992-9431-29895edde4e5";
+    public static String browserStacKUserName ="nabeelhuter1";
+    public static String browserStackKey ="9Fiyrfb3VaG3jVmb6jSr";
+    //public static String SAUCE_URL="https://nabeelhuter:706c1c3b-31b7-4992-9431-29895edde4e5@ondemand.saucelabs.com:80/wd/hub";
+    //public static String BROWSERSTACK_URL="@hub-cloud.browserstack.com:80/wd/hub"
+    //https:// +username + : +key +specific url for cloud
+    public static String SAUCE_URL = "https://peoplentech1234:f8195613-4319-4b3a-8ebc-e02c512ee521@ondemand.saucelabs.com:80/wd/hub";
+    public static String BROWSERSTACK_URL = "@hub-cloud.browserstack.com:80/wd/hub";
+
+    /**
+     *
+     * @param platform
+     * @param url
+     * @param browser
+     * @param cloud
+     * @param browserVersion
+     * @param envName
+     * @return
+     * @throws MalformedURLException
+     */
+
 
     @Parameters({"platform", "url", "browser", "cloud", "browserVersion", "envName"})
     @BeforeMethod
     public static WebDriver setupDriver(String platform, String url, String browser,
-                                        boolean cloud, String browserVersion, String envName) {
+                                        boolean cloud, String browserVersion, String envName) throws MalformedURLException {
         if (cloud) {
-            driver = getCloudDriver();
+            driver = getCloudDriver(browser, browserVersion, platform, envName);
         } else {
             driver = getLocalDriver(browser, platform);
         }
         driver.get(url);
         return driver;
     }
+
+    /**
+     *
+     * @param browser the browser you want to execute your test case
+     * @param platform in the operating system you want to execute your test case
+     * @return
+     */
 
     public static WebDriver getLocalDriver(String browser, String platform) {
         //chrome popup
@@ -66,7 +100,21 @@ public class CommonAPI {
         return driver;
     }
 
-    public static WebDriver getCloudDriver() {
+    public static WebDriver getCloudDriver(String browser, String browserVersion, String platform, String envName) throws MalformedURLException {
+        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+        desiredCapabilities.setCapability("name", "Cloud Execution");
+        desiredCapabilities.setCapability("browserName", browser);
+        desiredCapabilities.setCapability("browser_version", browserVersion);
+        desiredCapabilities.setCapability("os", platform);
+        desiredCapabilities.setCapability("os_version", "Mojave");
+
+        if (envName.equalsIgnoreCase("saucelabs")) {
+            driver = new RemoteWebDriver(new URL(SAUCE_URL), desiredCapabilities);
+        } else if (envName.equalsIgnoreCase("browserstack")) {
+            driver = new RemoteWebDriver(new URL(BROWSERSTACK_URL), desiredCapabilities);
+        }
+
+
         return driver;
     }
 
@@ -194,6 +242,11 @@ public class CommonAPI {
         return flag;
     }
 
+    /**
+     *
+     * @param locator xpath that we are trying to make webElement of
+     * @return webElement - webElement of the xpath
+     */
     public WebElement getElement(String locator) {
         WebElement element = driver.findElement(By.xpath(locator));
         return element;
