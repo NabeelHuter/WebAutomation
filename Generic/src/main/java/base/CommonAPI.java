@@ -7,6 +7,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestContext;
@@ -32,10 +33,10 @@ public class CommonAPI {
     public static WebDriver driver;
     public static ExtentReports extent;
     //HomeWork
-    public static String sauceUserName="nabeelhuter";
-    public static String sauceKey="706c1c3b-31b7-4992-9431-29895edde4e5";
-    public static String browserStacKUserName ="nabeelhuter1";
-    public static String browserStackKey ="9Fiyrfb3VaG3jVmb6jSr";
+    public static String sauceUserName = "nabeelhuter";
+    public static String sauceKey = "706c1c3b-31b7-4992-9431-29895edde4e5";
+    public static String browserStacKUserName = "nabeelhuter1";
+    public static String browserStackKey = "9Fiyrfb3VaG3jVmb6jSr";
     //public static String SAUCE_URL="https://nabeelhuter:706c1c3b-31b7-4992-9431-29895edde4e5@ondemand.saucelabs.com:80/wd/hub";
     //public static String BROWSERSTACK_URL="@hub-cloud.browserstack.com:80/wd/hub"
     //https:// +username + : +key +specific url for cloud
@@ -43,15 +44,15 @@ public class CommonAPI {
     public static String BROWSERSTACK_URL = "@hub-cloud.browserstack.com:80/wd/hub";
 
     /**
-     *
-     * @param platform
-     * @param url
-     * @param browser
-     * @param cloud
-     * @param browserVersion
-     * @param envName
+     * @param platform       -
+     * @param url            -
+     * @param browser        -
+     * @param cloud          -
+     * @param browserVersion -
+     * @param envName        -
      * @return
      * @throws MalformedURLException
+     * @Parameters - values are coming from the runner.xml file of the project modules
      */
 
 
@@ -69,8 +70,7 @@ public class CommonAPI {
     }
 
     /**
-     *
-     * @param browser the browser you want to execute your test case
+     * @param browser  the browser you want to execute your test case
      * @param platform in the operating system you want to execute your test case
      * @return
      */
@@ -107,6 +107,7 @@ public class CommonAPI {
         desiredCapabilities.setCapability("browser_version", browserVersion);
         desiredCapabilities.setCapability("os", platform);
         desiredCapabilities.setCapability("os_version", "Mojave");
+        desiredCapabilities.setCapability("resolution", "1600x1200");
 
         if (envName.equalsIgnoreCase("saucelabs")) {
             driver = new RemoteWebDriver(new URL(SAUCE_URL), desiredCapabilities);
@@ -243,7 +244,6 @@ public class CommonAPI {
     }
 
     /**
-     *
      * @param locator xpath that we are trying to make webElement of
      * @return webElement - webElement of the xpath
      */
@@ -251,4 +251,35 @@ public class CommonAPI {
         WebElement element = driver.findElement(By.xpath(locator));
         return element;
     }
+
+    public WebElement getElementByLinkText(String locator) {
+        return driver.findElement(By.linkText(locator));
+
+    }
+
+    public void DragNDropByXpaths(String fromLocator, String toLocator) {
+        Actions actions = new Actions(driver);
+        WebElement from = getElement(fromLocator);
+        WebElement to = getElement(toLocator);
+        actions.dragAndDrop(from, to).build().perform();
+
+    }
+
+    public void scrollIntoView(String locator) {
+        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+        javascriptExecutor.executeScript("arguments[0].scrollIntoView(true);", getElementByLinkText(locator));
+
+
+    }
+
+    public void clickOnElementByLinkText(String locator) {
+        driver.findElement(By.linkText(locator)).click();
+    }
+
+
 }
+
+
+
+
+

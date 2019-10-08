@@ -12,7 +12,7 @@
 
     <test name="Automation tests">
         <classes>
-            <class name="homepagetests.SearchTests"/>
+            <class name="homepagetests.ShopperTests"/>
         </classes>
     </test>
 </suite>

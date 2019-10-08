@@ -16,7 +16,5 @@ public class Search extends CommonAPI {
 
     }
 
-    public void clickOnSearchButton() {
-        clickOnElementByXpath("//input[@type='submit' and @value='Go']");
-    }
+
 }
